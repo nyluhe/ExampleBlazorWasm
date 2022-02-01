@@ -1,0 +1,89 @@
+﻿@using System.ComponentModel.DataAnnotations
+<div class="alert alert-secondary mt-4" role="alert">
+    <span class="oi oi-pencil mr-2" aria-hidden="true"></span>
+    <strong>@Title</strong>
+
+    <span class="text-nowrap">
+        Please take our
+        <a target="_blank" class="font-weight-bold" href="https://go.microsoft.com/fwlink/?linkid=2137916">brief survey</a>
+    </span>
+    and tell us what you think.
+
+    @if (isLoading)
+    {
+        <p>Loading!</p>
+    }
+    else 
+    {
+        <EditForm EditContext="@context" OnValidSubmit="Submit">
+            <DataAnnotationsValidator/>
+            <div>
+                <label>Name</label> 
+                <InputText @bind-Value="@dto.Name"/>
+                <ValidationMessage For="@(() => dto.Name)"/>
+            </div>
+
+            <div>
+                <label>Age</label>
+                <InputNumber @bind-Value="@dto.Age"/>
+                <ValidationMessage For=@(() => dto.Age)/>
+            </div>
+
+            <button type="submit">Submit!</button>
+        </EditForm>   
+
+        <EditForm Model="dto" OnValidSubmit="Submit">
+                        <DataAnnotationsValidator/>
+            <div>
+                <label>Name</label> 
+                <InputText @bind-Value="@dto.Name"/>
+                <ValidationMessage For="@(() => dto.Name)"/>
+            </div>
+
+            <div>
+                <label>Age</label>
+                <InputNumber @bind-Value="@dto.Age"/>
+                <ValidationMessage For=@(() => dto.Age)/>
+            </div>
+
+            <button type="submit">Submit!</button>
+        </EditForm>
+
+        @response
+    }
+
+</div>
+
+@code {
+    // Demonstrates how a parent component can supply parameters
+    [Parameter]
+    public string Title { get; set; }
+
+    private EditContext context;
+    private SimpleForm dto = new();
+    private bool isLoading = true;
+    private string response = "";
+
+    public class SimpleForm
+    {
+        [Required]
+        public string Name {get; set;}
+        [Required]
+        public int Age { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+
+        context = new EditContext(dto);
+
+        isLoading = false;
+    }
+
+    async Task Submit()
+    {
+        response = "Submitted!";
+    }
+
+}
