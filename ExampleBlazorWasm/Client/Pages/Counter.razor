@@ -6,8 +6,59 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+@if(isLoading) 
+{
+    <p>Is Loading!</p>
+}
+else
+{
+<EditForm EditContext="context" OnValidSubmit="Submit">
+    <div>
+        <label>Name</label>
+        <InputText @bind-Value="@dto.Name" />
+    </div>
+
+    <div>
+        <label>Age</label>
+        <InputNumber @bind-Value="@dto.Age" />
+    </div>
+
+    <button type="submit">Submit!</button>
+</EditForm>
+
+    @response
+}
+
+
 @code {
     private int currentCount = 0;
+
+    private EditContext context;
+    private SimpleFormDto dto = new();
+    private bool isLoading = false;
+
+    private string response;
+
+    public class SimpleFormDto
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        isLoading = true;
+
+        context = new EditContext(dto);
+
+        isLoading = false;
+    }
+
+    async Task Submit()
+    {
+        response = "submitted";
+    }
+
 
     private void IncrementCount()
     {
